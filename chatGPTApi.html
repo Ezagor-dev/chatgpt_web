@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatGPT API Kullanımı</title>
+    <!-- Bootstrap CSS ekleyin -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">ChatGPT API Kullanımı</h1>
+        <form id="prompt-form">
+            <div class="form-group">
+                <label for="user-prompt">Lütfen bir soru veya talimat girin:</label>
+                <input type="text" class="form-control" id="user-prompt" name="user-prompt">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="sendPrompt()">Gönder</button>
+        </form>
+
+        <h2 class="mt-4">Raw JSON Cevap:</h2>
+        <pre id="response"></pre> <!-- API yanıtını ön biçimlendirilmiş olarak göstermek için <pre> kullanıyoruz -->
+    </div>
+
+    <!-- Bootstrap JS ve jQuery ekleyin -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // JavaScript ile API isteğini gönderme işlemi
+        const apiUrl = "https://api.openai.com/v1/chat/completions";
+        const apiKey = "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"; // API anahtarınızı buraya ekleyin
+
+        function sendPrompt() {
+            const userPrompt = document.getElementById('user-prompt').value;
+            
+            const requestData = {
+                model: "gpt-4-1106-preview",
+                messages: [
+                    {
+                        role: "system",
+                        content: userPrompt
+                    }
+                ]
+            };
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseDiv = document.getElementById('response');
+                responseDiv.textContent = JSON.stringify(data, null, 2); // JSON yanıtını daha okunaklı bir şekilde göstermek için JSON.stringify kullanıyoruz
+            })
+            .catch(error => {
+                console.error('API Hatası:', error);
+            });
+        }
+    </script>
+</body>
+</html>
